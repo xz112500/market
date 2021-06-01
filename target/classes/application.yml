@@ -1,0 +1,74 @@
+server:
+  port: 7070
+
+spring:
+  application:
+    name: cloud-payment-service
+  redis:
+    port: 6379
+    host: 127.0.0.1
+    username:
+    jedis:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 4
+        max-wait: 1
+  datasource:
+     type: com.alibaba.druid.pool.DruidDataSource
+     url: jdbc:mysql://localhost:3306/User?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT
+     username: root
+     password: 123456
+     driver-class-name: com.mysql.cj.jdbc.Driver
+     druid:
+       max-wait: 60000
+       initial-size: 30
+       min-idle: 10
+       # 最小连接池数量
+       max-active: 1500
+       # 最大连接池数量
+       timeBetweenEvictionRunsMillis: 2000
+       #既作为检测的间隔时间又作为testWhileIdel执行的依据
+       minEvictableIdleTimeMillis: 30000
+       #销毁线程时检测当前连接的最后活动时间和当前时间差大于该值时，关闭当前连接
+
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: mysql
+    show-sql: true
+  rabbitmq:
+    username: user
+    password: 123456
+    port: 5672
+    virtual-host: /
+    host: 8.140.107.62
+    template:
+      receive-timeout: 30000
+      reply-timeout: 30000
+    publisher-returns: true
+    #对于ConfirmCallback来说：
+    #如果消息没有到exchange,则confirm回调,ack=false
+    #如果消息到达exchange,则confirm回调,ack=true
+    publisher-confirm-type: correlated
+    #手动开启确认
+    listener:
+      simple:
+        acknowledge-mode: manual
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+    ip-address: 8.140.107.62
+  client:
+    service-url:
+      defaultZone: http://8.140.107.62:8762/eureka
+
+debug: true
+
+
