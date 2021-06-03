@@ -19,6 +19,13 @@ public class ResultUtil<T> {
         r.setData(t);
         return r;
     }
+    public  ResultUtil<T> success() {
+        ResultUtil<T> r = new ResultUtil<T>();
+        r.setSuccess(ResultCode.SUCCESS.getSuccess());
+        r.setStatus(ResultCode.SUCCESS.getStatus());
+        r.setMessage(ResultCode.SUCCESS.getMessage());
+        return r;
+    }
     public  ResultUtil<T> error(){
         ResultUtil<T> r=new ResultUtil<T>();
         r.setStatus(ResultCode.ERROR.getStatus());

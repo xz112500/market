@@ -1,8 +1,12 @@
 package com.controller;
 
 import com.Service.Impl.UserServiceImpl;
+import com.Service.ProducerService;
+import com.alibaba.fastjson.JSONObject;
+import com.config.MailPost;
 import com.pojo.User;
 import com.pojo.Vo.PageQuery;
+import com.pojo.Vo.RegisterVo;
 import com.pojo.Vo.UserVo;
 import com.util.IdWorkers;
 import com.util.JWTUtil;
@@ -28,6 +32,10 @@ public class UserController {
     private UserServiceImpl userService;
     @Autowired
     private RabbitTemplate template;
+    @Autowired
+    private ProducerService producerService;
+    @Autowired
+    private MailPost mailPost;
     @ApiOperation(value = "通过用户名模糊查询")
     @GetMapping(value = "/query")
     public ResultUtil<Object> user(@RequestParam(value = "username") String username){
@@ -103,5 +111,19 @@ public class UserController {
     public String test1(String message){
         template.convertAndSend(RabbitmqUtils.DIRECT_EXCHANGES,"email",message);
         return "发送成功";
+    }
+    @PostMapping(value = "/Register")
+    public void Register(@RequestBody JSONObject jsonObject){
+      producerService.sendMail(RabbitmqUtils.DIRECT_EXCHANGES,RabbitmqUtils.DIRECT_QUEUE1_KEY,jsonObject);
+    }
+    @PostMapping(value = "GetMail")
+    public ResultUtil<Object> GetMail(String email){
+        try {
+            mailPost.MailPost(email);
+            return resultUtil.success();
+        }catch (Exception e){
+            e.printStackTrace();
+            return resultUtil.error();
+        }
     }
 }

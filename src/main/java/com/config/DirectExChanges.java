@@ -7,6 +7,9 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Configuration
 public class DirectExChanges {
     @Bean
@@ -15,7 +18,9 @@ public class DirectExChanges {
     }
     @Bean
     public Queue directQueue1(){
-        return new Queue("email",true);
+        Map<String,Object> args=new HashMap<>();
+        args.put("x-message-ttl",120000);
+        return new Queue("email",true,false,false,args);
     }
     @Bean
     public Queue directQueue2(){
