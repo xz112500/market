@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class CommodityController {
     ResultUtil<Object> resultUtil=new ResultUtil<>();
     @Autowired
-    CommodityService service;
+    private CommodityService service;
     @GetMapping("/queryByName")
     public ResultUtil<Object> QueryByName(@RequestParam String name, @RequestParam(value = "pageNum",defaultValue = "1",required = false) Integer pageNum,@RequestParam(value = "pageSize",defaultValue = "5",required = false) Integer pageSize){
         return resultUtil.ok(service.queryByName(name, pageNum-1, pageSize));

@@ -20,4 +20,5 @@ public interface UserService {
     UserVo queryByUsernameAndPassword(String username,String password);
 
     int updateStatusById(Integer status,Integer id);
+
 }

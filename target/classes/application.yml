@@ -59,6 +59,13 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+  mail:
+    host: smtp.qq.com
+    username: 672472545@qq.com
+    password: juyjnpqrjfitbbei
+    default-encoding: utf-8
+    address: fine_cast@qq.com
+
 
 eureka:
   instance:

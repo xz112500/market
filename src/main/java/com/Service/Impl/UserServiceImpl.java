@@ -5,7 +5,6 @@ import com.dao.UserDao;
 import com.pojo.User;
 import com.pojo.Vo.UserVo;
 import com.util.JWTUtil;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
@@ -23,7 +22,7 @@ import java.util.List;
 @EnableCaching
 public class UserServiceImpl implements UserService {
     @Autowired
-    UserDao userDao;
+    private UserDao userDao;
     @Override
     public List<User> QueryByName(String username) {
       List<User> list=userDao.queryByName(username);
@@ -43,7 +42,7 @@ public class UserServiceImpl implements UserService {
 
     public UserVo save(UserVo user){
         String Md5Pass= DigestUtils.md5DigestAsHex(user.getPassword().getBytes(StandardCharsets.UTF_8));
-        User user1=new User(user.getId(),user.getUsername(),Md5Pass,new JWTUtil().getJWT(user.getUsername(), Md5Pass), user.getEmail(),user.getStatus());
+        User user1=new User(user.getId(),user.getUsername(),Md5Pass,new JWTUtil().getJWT(user.getId(),user.getUsername(), Md5Pass), user.getEmail(),user.getStatus());
         userDao.save(user1);
         return new UserVo(user1.getId(),user1.getUsername(),user1.getEmail(),user1.getStatus(),user1.getToken());
     }
@@ -60,4 +59,5 @@ public class UserServiceImpl implements UserService {
     public int updateStatusById(Integer status, Integer id) {
         return userDao.updateStatusById(status,id) > 0 ? 1 : -1;
     }
+
 }

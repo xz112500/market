@@ -11,7 +11,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
-public interface UserDao  extends JpaRepository<User,Integer> {
+public interface UserDao extends JpaRepository<User,Integer> {
     @Query(value = "from User where username = ?1 ")
     List<User> queryByName(String username);
 
@@ -34,5 +34,6 @@ public interface UserDao  extends JpaRepository<User,Integer> {
     @Transactional
     @Query(value = "update  User u set u.status = ?1 where u.id= ?2")
     int updateStatusById(int status,int id);
+
 }
 

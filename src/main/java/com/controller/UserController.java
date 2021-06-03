@@ -6,6 +6,7 @@ import com.pojo.Vo.PageQuery;
 import com.pojo.Vo.UserVo;
 import com.util.IdWorkers;
 import com.util.JWTUtil;
+import com.util.RabbitmqUtils;
 import com.util.ResultUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -15,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
-
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -23,7 +23,6 @@ import java.util.List;
 @CrossOrigin
 @RequestMapping("/user")
 public class UserController {
-    private static final JWTUtil jwtUtil=new JWTUtil();
     ResultUtil<Object> resultUtil=new ResultUtil<>();
     @Autowired
     private UserServiceImpl userService;
@@ -75,7 +74,7 @@ public class UserController {
                    UserVo user=userService.queryByUsernameAndPassword(username, enCodePass);
                    if (user != null){
                        try{
-                           jwtUtil.parseToken(user.getToken());
+                           JWTUtil.parseToken(user.getToken());
                            return resultUtil.ok(user);
                        }catch (Exception e){
                            return resultUtil.error().message("token过期").status(406);
@@ -97,7 +96,12 @@ public class UserController {
     }
     @GetMapping(value = "/test")
         public String test(String message){
-            template.convertAndSend("fanout_order_exchange", "", message);
+            template.convertAndSend(RabbitmqUtils.FANOUT_EXCHANGES, "", message);
             return "OK,sendDirect:" + new IdWorkers(1,1).nextId();
         }
+    @GetMapping(value = "/test2")
+    public String test1(String message){
+        template.convertAndSend(RabbitmqUtils.DIRECT_EXCHANGES,"email",message);
+        return "发送成功";
+    }
 }
